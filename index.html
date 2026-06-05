@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Национальный музей Казахстана</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #DCD6CD 0%, #E5DDD2 100%);
+            font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #3A3530;
+            min-height: 100vh;
+        }
+
+        /* Контейнер приложения - полная ширина */
+        .app-root {
+            width: 100%;
+            min-height: 100vh;
+            background: #F2EFE9;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.08);
+        }
+
+        /* ===== HEADER (стики) ===== */
+        .museum-header {
+            background: #1C1A17;
+            padding: 16px 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border-bottom: 1px solid #2C2924;
+        }
+
+        .header-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .back-button {
+            background: rgba(255, 255, 255, 0.13);
+            border: none;
+            color: #fff;
+            font-size: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            visibility: hidden;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .back-button.visible {
+            visibility: visible;
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateX(-2px);
+        }
+
+        .back-button:active {
+            transform: scale(0.95);
+        }
+
+        .header-texts {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .header-title {
+            color: #F0EAE0;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            truncate: true;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .header-sub {
+            color: rgba(240, 234, 224, 0.6);
+            font-size: 12px;
+            margin-top: 2px;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .header-seal {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .header-seal img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Страница-контент */
+        .page-content {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            flex: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .intro-text {
+            color: #6B6560;
+            font-size: 13px;
+            margin-bottom: 4px;
+            letter-spacing: 0.3px;
+        }
+
+        /* Главный баннер */
+        .hero-banner {
+            width: 100%;
+            height: 280px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            border: 1px solid #DDD8CF;
+            background: linear-gradient(135deg, #1C1A17 0%, #3A2E28 100%);
+            display: flex;
+            align-items: flex-end;
+            position: relative;
+            margin-bottom: 12px;
+        }
+
+        .hero-banner::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0.2), transparent);
+            z-index: 1;
+        }
+
+        .hero-banner-content {
+            position: relative;
+            z-index: 2;
+            padding: 32px;
+            color: white;
+            width: 100%;
+        }
+
+        .hero-badge {
+            font-size: 10px;
+            color: #D4AF37;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .hero-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            line-height: 1.2;
+        }
+
+        .hero-desc {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.85);
+            max-width: 600px;
+            line-height: 1.5;
+        }
+
+        /* Инфо баннер */
+        .info-banner {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid #DDD8CF;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .info-icon {
+            width: 44px;
+            height: 44px;
+            background: #F5EDE4;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+
+        .info-content h3 {
+            font-size: 12px;
+            font-weight: 700;
+            color: #8B4513;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 8px;
+        }
+
+        .info-content p {
+            font-size: 13px;
+            color: #6B6560;
+            line-height: 1.6;
+        }
+
+        /* Сетка секций */
+        .sections-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin-bottom: 12px;
+        }
+
+        @media (min-width: 768px) {
+            .sections-grid {
+                grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .sections-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        /* Элемент секции */
+        .section-row {
+            background: #fff;
+            border: 1px solid #DDD8CF;
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            text-align: left;
+            width: 100%;
+            transition: all 0.2s ease;
+            min-height: 200px;
+        }
+
+        .section-row:hover {
+            background: #FEFAF5;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .section-row:active {
+            transform: scale(0.98);
+        }
+
+        .section-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            background: #F5EDE4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+            transition: background 0.2s ease;
+        }
+
+        .section-row:hover .section-icon {
+            background: #EEDFD3;
+        }
+
+        .section-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .section-label {
+            color: #1A1A1A;
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            line-height: 1.3;
+        }
+
+        .section-range {
+            color: #6B6560;
+            font-size: 12px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .section-count {
+            color: #8B4513;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding-top: 8px;
+            border-top: 1px solid #DDD8CF;
+            margin-top: auto;
+        }
+
+        .chevron {
+            color: #8B4513;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        /* Сетка экспонатов */
+        .exhibits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 12px;
+        }
+
+        @media (min-width: 768px) {
+            .exhibits-grid {
+                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .exhibits-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+        }
+
+        /* Элемент списка экспонатов */
+        .exhibit-row {
+            background: #fff;
+            border: 1px solid #DDD8CF;
+            border-radius: 11px;
+            overflow: hidden;
+            cursor: pointer;
+            text-align: left;
+            width: 100%;
+            transition: all 0.15s ease;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .exhibit-row:hover {
+            background: #FEFAF5;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .exhibit-row:active {
+            transform: scale(0.98);
+        }
+
+        .exhibit-img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            flex-shrink: 0;
+            background: #ede7df;
+            transition: transform 0.3s ease;
+        }
+
+        .exhibit-row:hover .exhibit-img {
+            transform: scale(1.05);
+        }
+
+        .exhibit-info {
+            flex: 1;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            min-width: 0;
+        }
+
+        .exhibit-code {
+            color: #8B4513;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .exhibit-name {
+            color: #1A1A1A;
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .exhibit-meta {
+            color: #6B6560;
+            font-size: 11px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* Детальная карточка */
+        .detail-card {
+            background: #fff;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid #DDD8CF;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 24px;
+        }
+
+        .detail-top {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0;
+        }
+
+        @media (min-width: 1024px) {
+            .detail-top {
+                grid-template-columns: 1fr 2fr;
+            }
+        }
+
+        .detail-img {
+            width: 100%;
+            min-height: 300px;
+            object-fit: cover;
+            flex-shrink: 0;
+            background: #ede7df;
+            display: block;
+        }
+
+        @media (min-width: 1024px) {
+            .detail-img {
+                min-height: 400px;
+            }
+        }
+
+        .detail-meta {
+            flex: 1;
+            padding: 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .detail-code {
+            color: #8B4513;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+        }
+
+        .detail-name {
+            color: #1A1A1A;
+            font-size: 28px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .detail-period {
+            color: #6B6560;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .detail-location {
+            color: #6B6560;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .detail-divider {
+            height: 1px;
+            background: #DDD8CF;
+        }
+
+        .detail-desc {
+            color: #3A3530;
+            font-size: 15px;
+            line-height: 1.8;
+            margin: 0;
+            padding: 28px;
+        }
+
+        .learn-more {
+            display: inline-block;
+            background: #1C1A17;
+            color: #F0EAE0;
+            padding: 14px 28px;
+            margin: 0 28px 28px;
+            border-radius: 10px;
+            text-decoration: none;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .learn-more:hover {
+            background: #3a2e28;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .learn-more:active {
+            transform: scale(0.98);
+        }
+
+        button {
+            background: none;
+            border: none;
+            font-family: inherit;
+        }
+
+        /* Поиск */
+        .search-container {
+            position: relative;
+            max-width: 400px;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 16px 12px 40px;
+            background: #fff;
+            border: 1px solid #DDD8CF;
+            border-radius: 10px;
+            font-size: 13px;
+            color: #3A3530;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .search-input:focus {
+            border-color: #8B4513;
+            box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.1);
+        }
+
+        .search-input::placeholder {
+            color: #6B6560;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6B6560;
+            font-size: 16px;
+            pointer-events: none;
+        }
+
+        /* Пустой/плейсхолдер */
+        .fallback-img {
+            background: #e8e0d4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Пустое состояние */
+        .empty-state {
+            background: #fff;
+            border-radius: 12px;
+            padding: 48px 24px;
+            text-align: center;
+            border: 1px solid #DDD8CF;
+        }
+
+        .empty-state p {
+            color: #6B6560;
+            font-size: 14px;
+        }
+
+        /* Футер */
+        .footer {
+            padding: 16px 24px;
+            border-top: 1px solid #DDD8CF;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px);
+            color: #6B6560;
+            font-size: 11px;
+            letter-spacing: 0.5px;
+            margin-top: auto;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 640px) {
+            .page-content {
+                padding: 16px;
+                gap: 16px;
+            }
+
+            .museum-header {
+                padding: 12px 16px;
+            }
+
+            .header-title {
+                font-size: 14px;
+            }
+
+            .hero-banner {
+                height: 200px;
+            }
+
+            .hero-banner-content {
+                padding: 20px;
+            }
+
+            .hero-title {
+                font-size: 22px;
+            }
+
+            .hero-desc {
+                font-size: 12px;
+            }
+
+            .detail-meta {
+                padding: 20px;
+            }
+
+            .detail-name {
+                font-size: 22px;
+            }
+
+            .detail-desc {
+                padding: 20px;
+                font-size: 14px;
+            }
+
+            .learn-more {
+                margin: 0 20px 20px;
+                padding: 12px 20px;
+                font-size: 12px;
+            }
+        }
+
+        /* Скрытые элементы */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Плавные переходы */
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="app-root" id="museumApp">
+    <!-- динамический рендер через JS -->
+</div>
+
+<script>
+    // ------------------------------------------------------------------
+    // 1. ДАННЫЕ
+    // ------------------------------------------------------------------
+    const PH = "https://placehold.co/400x300/e8e0d4/8B4513?text=🏺";
+
+    const sections = [
+        { id: "zhuzy", label: "Основатели ханства", icon: "👑", range: "1465 – 1531" },
+        { id: "rascvet", label: "Расцвет и объединение", icon: "⚔️", range: "1531 – 1718" },
+        { id: "dzhungary", label: "Борьба с джунгарами", icon: "🏹", range: "1718 – 1781" },
+        { id: "pozdnie", label: "Поздние ханы и жузы", icon: "🌙", range: "1781 – 1848" }
+    ];
+
+    const exhibits = {
+        zhuzy: [
+            { id: 1, code: "КЗ-01", name: "Керей хан", period: "1465 – 1474", loc: "Западная Сибирь / Семиречье", img: "https://e-history.kz/storage/tmp/resize/prominent_figures/1200_0_a78456c811efa07c0bcf4d05636f0487.jpg", desc: "Основатель Казахского ханства вместе с Жанибеком. Откочевал в Семиречье к Могулистану, где получил земли от хана Есена Буги. Считается первым казахским ханом." },
+            { id: 2, code: "КЗ-02", name: "Жанибек хан", period: "1465 – 1480", loc: "Семиречье / Сырдарья", img: "https://e-history.kz/storage/tmp/resize/seo_materials/1200_0_8d76a2996c465ad0b3b362f642066e77.jpg", desc: "Сооснователь Казахского ханства. Вместе с Кереем повёл народ на новые земли, заложив основу трёх жузов. Пользовался огромным авторитетом среди степных племён." },
+            { id: 3, code: "КЗ-03", name: "Бурундук хан", period: "1474 – 1511", loc: "Сырдарья / Семиречье", img: "https://qazyr.kz/wp-content/uploads/2024/06/IMG_20240615_222223.jpg", desc: "Сын Керея. При нём казахи укрепились на берегах Сырдарьи, ханство расширило свои границы. Вёл борьбу с Шейбанидами за города Присырдарьи." },
+            { id: 4, code: "КЗ-04", name: "Касым хан", period: "1511 – 1523", loc: "Вся степь", img: "https://sputnik.kz/img/07e7/0c/06/40649635_224:0:800:576_1920x0_80_0_0_0571222417279e8e9cbc1ca291851c7b.jpg", desc: "«Собиратель казахских земель». Объединил под своей властью до миллиона человек. Заключил союз с Москвой, при нём казахи вышли на международную арену. Составил первый казахский свод законов «Қасым ханның қасқа жолы»." },
+            { id: 5, code: "КЗ-05", name: "Мамаш хан", period: "1523 – 1526", loc: "Центральный Казахстан", img: "https://masterpiecer-images.s3.yandex.net/15c82655788b11eea589d659965eed18:upscaled", desc: "Сын Касыма. Кратковременное правление после гибели отца. При нём ханство ослабло из-за внутренних усобиц." },
+            { id: 6, code: "КЗ-06", name: "Тахир хан", period: "1526 – 1531", loc: "Сырдарья", img: "https://masterpiecer-images.s3.yandex.net/4cead4d6788b11ee85bf363fac71b015:upscaled", desc: "Период «Касіреттің замана» — смутное время. Тахир утратил многие завоевания Касыма, что привело к распаду части ханства." }
+        ],
+        rascvet: [
+            { id: 7, code: "РС-01", name: "Хакназар хан", period: "1538 – 1580", loc: "Вся степь", img: "https://i.ytimg.com/vi/e7QaJmxlsr4/maxresdefault.jpg", desc: "Сын Касыма. Восстановил единство казахских племён после смутного времени. Расширил ханство на севере и западе, налаживал отношения с Русским царством." },
+            { id: 8, code: "РС-02", name: "Шигай хан", period: "1580 – 1582", loc: "Сырдарья / Ташкент", img: "https://fsd.kopilkaurokov.ru/uploads/user_file_56b2ea389363e/otkompietientnostiuchitieliakkompietientsiiamuchashchikhsia_2.jpeg", desc: "Союзник Абдулла-хана Бухарского в войне против Шейбанидов. Краткое, но активное правление." },
+            { id: 9, code: "РС-03", name: "Тәуекел хан", period: "1582 – 1598", loc: "Весь Казахстан", img: "https://uyguravazi.kazgazeta.kz/wp-content/uploads/2015/04/shigai.jpg", desc: "Внук Жанибека. Активно воевал за города Сырдарьи — взял Ташкент, Самарканд, Фергану. Установил дипломатические отношения с Московским царством." },
+            { id: 10, code: "РС-04", name: "Есим хан", period: "1598 – 1628", loc: "Весь Казахстан", img: "https://i.ytimg.com/vi/ByWmqMZjslc/hqdefault.jpg", desc: "Один из величайших казахских ханов. Уничтожил ханство Турсуна в Ташкенте. Составил свод законов «Есім ханның ескі жолы». Победил джунгар в битве 1627 года." },
+            { id: 11, code: "РС-05", name: "Жаңғір хан", period: "1628 – 1652", loc: "Семиречье / Сырдарья", img: "https://e-history.kz/storage/tmp/resize/history_calendars/1200_0_defdb1ba11eb88180b00e796bf89fb4b.jpg", desc: "Сын Есима. Герой Орбулакской битвы (1643): с 600 воинами сдержал 50-тысячную джунгарскую армию до подхода подкреплений. Строил крепостные укрепления." },
+            { id: 12, code: "РС-06", name: "Батыр хан (Батырбек)", period: "1652 – 1680", loc: "Семиречье", img: "https://anatili.kazgazeta.kz/wp-content/uploads/%D0%9A%D0%B0%D0%B9%D1%8B%D0%BF-%D1%85%D0%B0%D0%BD.jpg", desc: "Сын Жаңғіра. Правил в тяжёлое время усиления джунгарского давления на восточные рубежи ханства." },
+            { id: 13, code: "РС-07", name: "Тәуке хан", period: "1680 – 1718", loc: "Весь Казахстан", img: "https://avatars.mds.yandex.net/i?id=ace9b43a486107f69b8d7500aea3bd6fdf01d663-3734103-images-thumbs&n=13", desc: "«Аз-Тауке» — объединитель трёх жузов. Составил «Жеті Жарғы» — главный правовой кодекс казахов. Совместно с Батыром Богенбаем разгромил джунгар у Сайрама. Последний хан единого Казахстана." }
+        ],
+        dzhungary: [
+            { id: 14, code: "ДЖ-01", name: "Қайып хан (Старший жуз)", period: "1718 – 1729", loc: "Старший жуз", img: "https://anatili.kazgazeta.kz/wp-content/uploads/%D0%9D%D1%83%D1%80%D0%B0%D0%BB%D1%8B-%D0%A5%D0%90%D0%9D.jpg", desc: "Хан Старшего жуза в период «Ақтабан шұбырынды» — великого бедствия джунгарского нашествия 1723 года. Руководил отступлением народа." },
+            { id: 15, code: "ДЖ-02", name: "Абулхайыр хан (Младший жуз)", period: "1718 – 1748", loc: "Младший жуз", img: "https://i.ytimg.com/vi/5w08UE0uJkc/oar2.jpg", desc: "Герой битвы при Аныракае (1730). В 1731 году принял российское подданство, что положило начало присоединению Казахстана к России. Искусный дипломат и полководец." },
+            { id: 16, code: "ДЖ-03", name: "Семеке хан (Средний жуз)", period: "1718 – 1737", loc: "Средний жуз", img: "https://anatili.kazgazeta.kz/wp-content/uploads/%D0%A2%D0%B0%D1%85%D0%B8%D1%80.jpg", desc: "Хан Среднего жуза. В 1731 году также принял российское подданство. Вёл борьбу с джунгарами на восточных рубежах Среднего жуза." },
+            { id: 17, code: "ДЖ-04", name: "Абылмамбет хан (Средний жуз)", period: "1737 – 1771", loc: "Средний жуз / Туркестан", img: "https://anatili.kazgazeta.kz/wp-content/uploads/%D0%90%D0%B1%D0%B8%D0%BB%D0%BC%D0%B0%D0%BC%D0%B1%D0%B5%D1%82.jpg", desc: "Хан Среднего жуза. Резиденция — Туркестан. Совместно с Абылаем вёл военные действия против джунгар. Поддерживал отношения с Россией и Цинским Китаем." },
+            { id: 18, code: "ДЖ-05", name: "Абылай хан", period: "1771 – 1781", loc: "Средний жуз / Весь Казахстан", img: "https://i.pinimg.com/736x/d1/3a/e7/d13ae7af8c5eafae3b1602f02bf45f09.jpg", desc: "Величайший из казахских ханов. Герой трёх войн с джунгарами. Блестящий дипломат: одновременно поддерживал отношения с Россией и Китаем. Провозглашён ханом всех трёх жузов. Канонизирован как «хан-батыр»." },
+            { id: 19, code: "ДЖ-06", name: "Нуралы хан (Младший жуз)", period: "1748 – 1786", loc: "Младший жуз", img: "https://i.ytimg.com/vi/daMgdex-XFg/maxresdefault.jpg", desc: "Сын Абулхайыра. Правил в период восстания Пугачёва и усиления российского контроля. Поддерживал российскую ориентацию отца." }
+        ],
+        pozdnie: [
+            { id: 20, code: "ПХ-01", name: "Уәли хан (Средний жуз)", period: "1781 – 1819", loc: "Средний жуз", img: "https://tengrinews.kz/userdata/images/u320/resized/d1aa32484f8bb979e661ca3240781bd4.jpg", desc: "Сын Абылая. Последний законный хан Среднего жуза. После его смерти в 1819 году Россия упразднила институт ханской власти в Среднем жузе." },
+            { id: 21, code: "ПХ-02", name: "Айшуақ хан (Младший жуз)", period: "1797 – 1805", loc: "Младший жуз", img: "https://mysl.kazgazeta.kz/wp-content/uploads/2015/11/%D0%A2%D0%B0%D1%83%D0%BA%D0%B8%D0%BD.jpg", desc: "Брат Нуралы. Правил при усилении российского протектората над Младшим жузом. Конец самостоятельной ханской власти приближался." },
+            { id: 22, code: "ПХ-03", name: "Жантөре хан (Младший жуз)", period: "1805 – 1809", loc: "Младший жуз", img: "https://qamshy.kz/uploads/image_news/20170710120209200.jpg", desc: "Сын Айшуака. Назначен Россией. Период усиленного колониального контроля над Младшим жузом." },
+            { id: 23, code: "ПХ-04", name: "Арыстан хан (Младший жуз)", period: "1809 – 1816", loc: "Младший жуз", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Aristanbab.jpg/960px-Aristanbab.jpg", desc: "Короткое правление в условиях ограниченного суверенитета. Российская администрация всё активнее вмешивалась в дела ханства." },
+            { id: 24, code: "ПХ-05", name: "Шерғазы хан (Младший жуз)", period: "1812 – 1824", loc: "Младший жуз", img: "https://turaninfo.kz/wp-content/uploads/2018/05/DSC_0486.jpg", desc: "Последний хан Младшего жуза. В 1824 году Россия «Уставом о сибирских казахах» упразднила ханскую власть в Младшем жузе, заменив её окружной системой." },
+            { id: 25, code: "ПХ-06", name: "Сүйік хан (Старший жуз)", period: "1808 – 1819", loc: "Старший жуз", img: "https://avatars.mds.yandex.net/get-altay/10095165/2a000001925ddc16a654fc9b2d69d4290638/orig", desc: "Один из последних ханов Старшего жуза. Старший жуз оказался под давлением Кокандского ханства с юга и России с севера." },
+            { id: 26, code: "ПХ-07", name: "Кенесары хан", period: "1841 – 1847", loc: "Весь Казахстан", img: "https://e-history.kz/storage/tmp/resize/news/1200_0_514bf2427ec659907ced901dc7e21a8e.jpg", desc: "Последний хан всего Казахстана. Внук Абылая. Поднял крупнейшее национально-освободительное восстание (1837–1847) против российского колониализма. Погиб в бою с киргизами в 1847 году. Национальный герой Казахстана." }
+        ]
+    };
+
+    // ------------------------------------------------------------------
+    // 2. СОСТОЯНИЕ И РЕНДЕР
+    // ------------------------------------------------------------------
+    let currentState = {
+        screen: "home",
+        activeSectionId: null,
+        activeExhibit: null,
+        searchQuery: ""
+    };
+
+    function getCurrentSection() {
+        if (!currentState.activeSectionId) return null;
+        return sections.find(s => s.id === currentState.activeSectionId);
+    }
+
+    function goHome() {
+        currentState = { screen: "home", activeSectionId: null, activeExhibit: null, searchQuery: "" };
+        render();
+    }
+
+    function goList(sectionId) {
+        currentState = { screen: "list", activeSectionId: sectionId, activeExhibit: null, searchQuery: "" };
+        render();
+    }
+
+    function goDetail(exhibit) {
+        currentState = { ...currentState, screen: "detail", activeExhibit: exhibit };
+        render();
+    }
+
+    function goBack() {
+        if (currentState.screen === "detail") {
+            currentState = { ...currentState, screen: "list", activeExhibit: null };
+        } else if (currentState.screen === "list") {
+            goHome();
+        } else {
+            goHome();
+        }
+        render();
+    }
+
+    function handleImageError(e) {
+        e.target.src = PH;
+    }
+
+    function handleSearch(query) {
+        currentState.searchQuery = query.toLowerCase();
+        render();
+    }
+
+    // ------------------------------------------------------------------
+    // компоненты рендера
+    // ------------------------------------------------------------------
+    function renderHome() {
+        const pageDiv = document.createElement('div');
+        pageDiv.className = 'page-content fade-in';
+
+        // Баннер
+        const banner = document.createElement('div');
+        banner.className = 'hero-banner';
+        banner.innerHTML = `
+            <div class="hero-banner-content">
+                <div class="hero-badge">Национальное Достояние</div>
+                <h2 class="hero-title">Казахское Ханство</h2>
+                <p class="hero-desc">Интерактивный путеводитель по ключевым фигурам, основателям, полководцам и ханам великой степи.</p>
+            </div>
+        `;
+        pageDiv.appendChild(banner);
+
+        // Инфо баннер
+        const infoBanner = document.createElement('div');
+        infoBanner.className = 'info-banner';
+        infoBanner.innerHTML = `
+            <div class="info-icon">🏛️</div>
+            <div class="info-content">
+                <h3>Залы Музея</h3>
+                <p>Каждая эпоха представляет собой важнейший этап становления государственности Казахстана. Выберите период для подробного изучения.</p>
+            </div>
+        `;
+        pageDiv.appendChild(infoBanner);
+
+        // Сетка секций
+        const grid = document.createElement('div');
+        grid.className = 'sections-grid';
+
+        sections.forEach(sec => {
+            const btn = document.createElement('button');
+            btn.className = 'section-row';
+            const count = exhibits[sec.id] ? exhibits[sec.id].length : 0;
+
+            btn.innerHTML = `
+                <div class="section-icon">${sec.icon}</div>
+                <div class="section-info">
+                    <div class="section-label">${sec.label}</div>
+                    <div class="section-range">📅 ${sec.range}</div>
+                </div>
+                <div class="section-count">${count} экспонатов</div>
+            `;
+            btn.addEventListener('click', () => goList(sec.id));
+            grid.appendChild(btn);
+        });
+        pageDiv.appendChild(grid);
+
+        return pageDiv;
+    }
+
+    function renderList() {
+        const sectionId = currentState.activeSectionId;
+        if (!sectionId) return renderHome();
+
+        const list = exhibits[sectionId] || [];
+        const filteredList = list.filter(ex =>
+            !currentState.searchQuery ||
+            ex.name.toLowerCase().includes(currentState.searchQuery) ||
+            ex.code.toLowerCase().includes(currentState.searchQuery) ||
+            ex.loc.toLowerCase().includes(currentState.searchQuery)
+        );
+
+        const pageDiv = document.createElement('div');
+        pageDiv.className = 'page-content fade-in';
+
+        // Поиск
+        const searchDiv = document.createElement('div');
+        searchDiv.className = 'search-container';
+        searchDiv.innerHTML = `
+            <span class="search-icon">🔍</span>
+            <input type="text" class="search-input" placeholder="Поиск правителей..." value="${currentState.searchQuery}">
+        `;
+        const searchInput = searchDiv.querySelector('.search-input');
+        searchInput.addEventListener('input', (e) => handleSearch(e.target.value));
+        pageDiv.appendChild(searchDiv);
+
+        // Сетка экспонатов
+        if (filteredList.length > 0) {
+            const grid = document.createElement('div');
+            grid.className = 'exhibits-grid';
+
+            filteredList.forEach(ex => {
+                const row = document.createElement('button');
+                row.className = 'exhibit-row';
+                row.innerHTML = `
+                    <img class="exhibit-img" src="${ex.img}" alt="${ex.name}" loading="lazy">
+                    <div class="exhibit-info">
+                        <div class="exhibit-code">${ex.code}</div>
+                        <div class="exhibit-name">${ex.name}</div>
+                        <div class="exhibit-meta">${ex.period} • ${ex.loc}</div>
+                    </div>
+                `;
+                const imgEl = row.querySelector('img');
+                if (imgEl) imgEl.addEventListener('error', handleImageError);
+                row.addEventListener('click', () => goDetail(ex));
+                grid.appendChild(row);
+            });
+            pageDiv.appendChild(grid);
+        } else {
+            const empty = document.createElement('div');
+            empty.className = 'empty-state';
+            empty.innerHTML = '<p>По вашему запросу ничего не найдено. Попробуйте изменить фильтр поиска.</p>';
+            pageDiv.appendChild(empty);
+        }
+
+        return pageDiv;
+    }
+
+    function renderDetail() {
+        const ex = currentState.activeExhibit;
+        if (!ex) return renderHome();
+
+        const pageDiv = document.createElement('div');
+        pageDiv.className = 'page-content fade-in';
+
+        const card = document.createElement('div');
+        card.className = 'detail-card';
+
+        card.innerHTML = `
+            <div class="detail-top">
+                <img class="detail-img" src="${ex.img}" alt="${ex.name}">
+                <div class="detail-meta">
+                    <div class="detail-code">${ex.code}</div>
+                    <div class="detail-name">${ex.name}</div>
+                    <div class="detail-divider"></div>
+                    <div class="detail-period">📅 ${ex.period}</div>
+                    <div class="detail-location">📍 ${ex.loc}</div>
+                </div>
+            </div>
+            <div class="detail-divider"></div>
+            <p class="detail-desc">${ex.desc}</p>
+        `;
+
+        const imgInCard = card.querySelector('.detail-img');
+        if (imgInCard) imgInCard.addEventListener('error', handleImageError);
+
+        const linkBtn = document.createElement('a');
+        linkBtn.href = `https://www.google.com/search?q=${encodeURIComponent(ex.name + " Казахстан музей")}`;
+        linkBtn.target = "_blank";
+        linkBtn.rel = "noopener noreferrer";
+        linkBtn.className = "learn-more";
+        linkBtn.innerText = "Узнать больше →";
+        card.appendChild(linkBtn);
+
+        pageDiv.appendChild(card);
+        return pageDiv;
+    }
+
+    function updateHeader() {
+        const headerDiv = document.querySelector('.museum-header');
+        if (!headerDiv) return;
+
+        const sec = getCurrentSection();
+        let title = "";
+        let subtitle = "";
+
+        if (currentState.screen === "home") {
+            title = "МУЗЕЙ КАЗАХСТАНА";
+            subtitle = "Историческое наследие";
+        } else if (currentState.screen === "list" && sec) {
+            title = sec.label;
+            subtitle = sec.range;
+        } else if (currentState.screen === "detail" && currentState.activeExhibit) {
+            title = currentState.activeExhibit.name;
+            subtitle = `${currentState.activeExhibit.code} · ${currentState.activeExhibit.period}`;
+        } else {
+            title = "МУЗЕЙ КАЗАХСТАНА";
+            subtitle = "";
+        }
+
+        const titleSpan = headerDiv.querySelector('.header-title');
+        const subSpan = headerDiv.querySelector('.header-sub');
+        if (titleSpan) titleSpan.innerText = title;
+        if (subSpan) subSpan.innerText = subtitle;
+
+        const backBtn = headerDiv.querySelector('.back-button');
+        if (backBtn) {
+            if (currentState.screen === "home") {
+                backBtn.classList.remove('visible');
+            } else {
+                backBtn.classList.add('visible');
+            }
+        }
+    }
+
+    function render() {
+        const appContainer = document.getElementById('museumApp');
+        if (!appContainer) return;
+
+        appContainer.innerHTML = `
+            <div class="museum-header">
+                <div class="header-row">
+                    <button class="back-button" aria-label="Назад">←</button>
+                    <div class="header-texts">
+                        <div class="header-title">МУЗЕЙ КАЗАХСТАНА</div>
+                        <div class="header-sub">Историческое наследие</div>
+                    </div>
+                    <div class="header-seal">
+                        <img src="https://d2xsxph8kpxj0f.cloudfront.net/310519663717682200/6jwbq9eonyvunLLiQaVKGB/kazakh-khanate-seal-7rAkENFnfpZFo46495yv5Y.webp" alt="Seal">
+                    </div>
+                </div>
+            </div>
+            <div id="dynamicPage"></div>
+            <div class="footer">© ${new Date().getFullYear()} Национальный музей Республики Казахстан</div>
+        `;
+
+        const headerDiv = appContainer.querySelector('.museum-header');
+        const backBtn = headerDiv?.querySelector('.back-button');
+        if (backBtn) {
+            backBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                goBack();
+            });
+        }
+
+        const pageContainer = document.getElementById('dynamicPage');
+        if (!pageContainer) return;
+
+        let content = null;
+        if (currentState.screen === "home") content = renderHome();
+        else if (currentState.screen === "list") content = renderList();
+        else if (currentState.screen === "detail") content = renderDetail();
+        else content = renderHome();
+
+        if (content) pageContainer.appendChild(content);
+        updateHeader();
+    }
+
+    // Инициализация
+    render();
+</script>
+</body>
+</html>
